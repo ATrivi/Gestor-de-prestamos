@@ -2,7 +2,9 @@ package com.example.Gestordeprestamos.controller;
 
 import com.example.Gestordeprestamos.model.Prestamo;
 import com.example.Gestordeprestamos.repository.PrestamoRepository;
+import com.example.Gestordeprestamos.service.PrestamoService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -12,59 +14,61 @@ import java.util.Optional;
 @RequestMapping("/prestamos")
 public class PrestamoController {
 
+
+    private PrestamoService prestamoService;
     private PrestamoRepository prestamoRepository;
 
-    public PrestamoController(PrestamoRepository prestamoRepository) {
+    public PrestamoController(PrestamoRepository prestamoRepository, PrestamoService prestamoService) {
         this.prestamoRepository = prestamoRepository;
+        this.prestamoService = prestamoService;
     }
 
     @GetMapping
     public List<Prestamo> listarPrestamos() {
-        return prestamoRepository.findAll();
+        return prestamoService.listarTodos();
 
     }
 
     @PostMapping
     public Prestamo crearPrestamo (@Valid @RequestBody Prestamo prestamo) {
-        return prestamoRepository.save(prestamo);
+        return prestamoService.crearPrestamo(prestamo);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarPrestamo(@PathVariable Integer id) {
-        if (!prestamoRepository.existsById(id)) {
-            return ResponseEntity.notFound().build(); // Devuelve 404 si no existe
+            boolean eliminado = prestamoService.eliminarPrestamo(id); // Devuelve 404 si no existe
+        if(eliminado) {
+            return ResponseEntity.noContent().build(); //204 si se borró
+        } else {
+            return ResponseEntity.notFound().build(); //404 si no existía
         }
-
-        prestamoRepository.deleteById(id); // Borra el préstamo
-        return ResponseEntity.noContent().build();   // Devuelve 204 No Content si se borró
     }
 
     @GetMapping("/estado")
     public List<Prestamo> buscarPorEstado(@RequestParam boolean devuelto) {
-        return prestamoRepository.findByDevuelto(devuelto);
+        return prestamoService.buscarPorEstado(devuelto);
     }
+
+    @GetMapping("/prestatario")
+    public List<Prestamo> buscarPorPrestatario(@RequestParam String nombrePrestatario) {
+        return prestamoService.buscarPorPrestatario(nombrePrestatario);
+    }
+
+    @GetMapping("/categoria")
+    public List<Prestamo> buscarPorCategoria(@RequestParam String nombreCat) {
+        return prestamoService.buscarPorCategoria(nombreCat);
+    }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Prestamo> actualizarPrestamo(
             @PathVariable Integer id,
             @Valid @RequestBody Prestamo nuevoPrestamo) {
 
-        Optional<Prestamo> prestamoOptional = prestamoRepository.findById(id);
-
-        if (prestamoOptional.isPresent()) {
-            Prestamo existente = prestamoOptional.get();
-
-            existente.setPrestador(nuevoPrestamo.getPrestador());
-            existente.setPrestatario(nuevoPrestamo.getPrestatario());
-            existente.setFechaPrestamo(nuevoPrestamo.getFechaPrestamo());
-            existente.setFechaDevolucion(nuevoPrestamo.getFechaDevolucion());
-            existente.setDevuelto(nuevoPrestamo.isDevuelto());
-            existente.setCategoria(nuevoPrestamo.getCategoria());
-
-            Prestamo actualizado = prestamoRepository.save(existente);
-            return ResponseEntity.ok(actualizado);
-        } else {
-            return ResponseEntity.notFound().build();
+        return prestamoService.actualizarPrestamo(id, nuevoPrestamo)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
         }
     }
-}
+

@@ -8,6 +8,8 @@ import java.util.List;
 public interface PrestamoRepository extends JpaRepository <Prestamo, Integer> {
 
     List<Prestamo> findByDevuelto(boolean devuelto);
+    List<Prestamo> findByPrestatarioIgnoreCase (String prestatario);
+    List<Prestamo> findByCategoriaIgnoreCase (String categoria);
 
 
 }
