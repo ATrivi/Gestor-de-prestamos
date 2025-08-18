@@ -1,7 +1,9 @@
 package com.example.Gestordeprestamos.controller;
 
+import com.example.Gestordeprestamos.external.CountryInfo;
 import com.example.Gestordeprestamos.model.Prestamo;
 import com.example.Gestordeprestamos.repository.PrestamoRepository;
+import com.example.Gestordeprestamos.service.PaisService;
 import com.example.Gestordeprestamos.service.PrestamoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,17 @@ import java.util.Optional;
 public class PrestamoController {
 
 
-    private PrestamoService prestamoService;
-    private PrestamoRepository prestamoRepository;
+    private final PrestamoService prestamoService;
 
-    public PrestamoController(PrestamoRepository prestamoRepository, PrestamoService prestamoService) {
-        this.prestamoRepository = prestamoRepository;
+    @Autowired
+    private PaisService paisService;
+
+    @GetMapping("/pais")
+    public CountryInfo getInfoDelPais(@RequestParam String nombre) {
+        return paisService.getInfoPorNombre(nombre);
+    }
+
+    public PrestamoController(PrestamoService prestamoService) {
         this.prestamoService = prestamoService;
     }
 
