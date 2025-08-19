@@ -2,7 +2,6 @@ package com.example.Gestordeprestamos.controller;
 
 import com.example.Gestordeprestamos.external.CountryInfo;
 import com.example.Gestordeprestamos.model.Prestamo;
-import com.example.Gestordeprestamos.repository.PrestamoRepository;
 import com.example.Gestordeprestamos.service.PaisService;
 import com.example.Gestordeprestamos.service.PrestamoService;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/prestamos")

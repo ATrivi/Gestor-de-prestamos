@@ -37,6 +37,7 @@ public class Prestamo {
         this.prestador = prestador;
         this.prestatario = prestatario;
         this.fechaPrestamo = fechaPrestamo;
+
     }
 
     public String getPrestador() {
