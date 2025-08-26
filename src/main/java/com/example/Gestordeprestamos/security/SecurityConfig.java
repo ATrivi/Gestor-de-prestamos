@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -25,9 +25,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/registro").permitAll()
-                        .requestMatchers("/prestamos/**").authenticated()
+                        .requestMatchers("/prestamos/mios", "/prestamos").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/prestamos/pais", "/prestamos/categoria", "/prestamos/estado", "/prestamos/prestatario", "/prestamos/*","/usuarios/registro/crear-admin" ).hasRole("ADMIN")
                 )
-                .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 

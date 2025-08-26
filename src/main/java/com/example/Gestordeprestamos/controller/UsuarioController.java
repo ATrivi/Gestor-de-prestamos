@@ -5,6 +5,7 @@ import com.example.Gestordeprestamos.model.Usuario;
 import com.example.Gestordeprestamos.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,8 +30,25 @@ public class UsuarioController {
         }
 
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRol("USER"); // forzamos a que todos los registrados sean 'USER'
         usuarioRepository.save(usuario);
 
         return "Usuario registrado correctamente";
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/registro/crear-admin")
+    public String registrarAdmin (@Valid @RequestBody Usuario usuario) {
+
+        if (usuarioRepository.findByNombreUsuario(usuario.getNombreUsuario()).isPresent()) {
+            return "Ya existe un usuario con este nombre";
+        }
+
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRol("ADMIN"); // forzamos a que todos los registrados sean 'ADMIN'
+        usuarioRepository.save(usuario);
+
+        return "Usuario administrador registrado correctamente";
+    }
 }
+

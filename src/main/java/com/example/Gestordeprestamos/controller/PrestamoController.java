@@ -7,6 +7,8 @@ import com.example.Gestordeprestamos.service.PrestamoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -17,6 +19,10 @@ public class PrestamoController {
 
     private final PrestamoService prestamoService;
 
+    public PrestamoController(PrestamoService prestamoService) {
+        this.prestamoService = prestamoService;
+    }
+
     @Autowired
     private PaisService paisService;
 
@@ -25,14 +31,18 @@ public class PrestamoController {
         return paisService.getInfoPorNombre(nombre);
     }
 
-    public PrestamoController(PrestamoService prestamoService) {
-        this.prestamoService = prestamoService;
-    }
 
     @GetMapping
     public List<Prestamo> listarPrestamos() {
         return prestamoService.listarTodos();
 
+    }
+    @GetMapping("/mios")
+    public List<Prestamo> listarMisPrestamos() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nombreUsuario = auth.getName();
+
+        return prestamoService.buscarPorUsuario(nombreUsuario);
     }
 
     @PostMapping

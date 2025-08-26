@@ -1,5 +1,6 @@
 package com.example.Gestordeprestamos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -10,6 +11,10 @@ import jakarta.validation.constraints.NotNull;
 @Table(name ="Prestamo")
 public class Prestamo {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    @JsonIgnore
+    private Usuario usuario;
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int idPrestamo;
@@ -22,9 +27,10 @@ public class Prestamo {
     @NotNull
     private LocalDate fechaDevolucion;
     @NotNull
-    private Boolean devuelto;
+    private boolean devuelto;
     @NotBlank
     private String categoria;
+
 
     public Prestamo() {
     }
@@ -38,6 +44,14 @@ public class Prestamo {
         this.prestatario = prestatario;
         this.fechaPrestamo = fechaPrestamo;
 
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public String getPrestador() {

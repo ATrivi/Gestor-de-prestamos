@@ -25,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return User.builder()
                 .username(usuario.getNombreUsuario())
-                .password(usuario.getPassword()) // ¡ya viene encriptada!
+                .password(usuario.getPassword()) // ya viene encriptada
                 .roles(usuario.getRol()) // debe estar bien mapeado (ej: ADMIN, USER)
                 .build();
     }
