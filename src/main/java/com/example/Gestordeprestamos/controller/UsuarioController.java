@@ -36,7 +36,7 @@ public class UsuarioController {
         return "Usuario registrado correctamente";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registro/crear-admin")
     public String registrarAdmin (@Valid @RequestBody Usuario usuario) {
 

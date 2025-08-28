@@ -11,6 +11,7 @@ import com.example.Gestordeprestamos.model.Usuario;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,19 @@ public class PrestamoService {
     @PreAuthorize("hasRole('ADMIN')")
     public List<Prestamo> buscarPorCategoria(String nombreCat){
         return prestamoRepository.findByCategoriaIgnoreCase(nombreCat);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public List<Prestamo> buscarMisPrestamosVencidos() {
+        // 1) Usuario actual (según Spring Security)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nombreUsuario = auth.getName();
+
+        // 2) Fecha de corte calculada en el servidor (confiable)
+        LocalDate hoy = LocalDate.now();
+
+        // 3) Consulta
+        return prestamoRepository.findVencidosDeUsuario(hoy, nombreUsuario);
     }
 
 

@@ -25,8 +25,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/registro").permitAll()
-                        .requestMatchers("/prestamos/mios", "/prestamos").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/prestamos/pais", "/prestamos/categoria", "/prestamos/estado", "/prestamos/prestatario", "/prestamos/*","/usuarios/registro/crear-admin" ).hasRole("ADMIN")
+
+                        .requestMatchers("/prestamos/vencidos/mios", "/prestamos/mios", "/prestamos")
+                            .hasAnyRole("USER", "ADMIN")
+
+
+                        .requestMatchers(
+                                "/prestamos/pais",
+                                "/prestamos/categoria",
+                                "/prestamos/estado",
+                                "/prestamos/prestatario",
+                                "/prestamos/**",
+                                "/usuarios/registro/crear-admin"
+                        ).hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();

@@ -75,8 +75,6 @@ public class PrestamoController {
         return prestamoService.buscarPorCategoria(nombreCat);
     }
 
-
-
     @PutMapping("/{id}")
     public ResponseEntity<Prestamo> actualizarPrestamo(
             @PathVariable Integer id,
@@ -85,6 +83,11 @@ public class PrestamoController {
         return prestamoService.actualizarPrestamo(id, nuevoPrestamo)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+        }
+
+        @GetMapping("/vencidos/mios")
+    public List<Prestamo> listarMisPrestamosVencidos(){
+        return prestamoService.buscarMisPrestamosVencidos();
         }
     }
 
